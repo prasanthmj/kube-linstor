@@ -29,8 +29,16 @@ RUN apt-get update \
 ENV JDBC_POSTGRESQL_VERSION 42.2.2
 RUN wget -O /usr/share/linstor-server/lib/postgresql-${JDBC_POSTGRESQL_VERSION}.jar \
       https://jdbc.postgresql.org/download/postgresql-${JDBC_POSTGRESQL_VERSION}.jar \
-&& sed -i /usr/share/linstor-server/bin/* \
-     -e "/^CLASSPATH=\$CLASSPATH/d" \
-     -e "/^CLASSPATH=/aCLASSPATH=\$CLASSPATH:\$APP_HOME/lib/postgresql-${JDBC_POSTGRESQL_VERSION}.jar"
+ && sed -i "/^CLASSPATH=/ s|$|:\$APP_HOME/lib/postgresql-${JDBC_POSTGRESQL_VERSION}.jar|" \
+      /usr/share/linstor-server/bin/Controller
+
+# Install mysql connector
+ENV JDBC_MYSQL_VERSION 8.0.12
+RUN wget -O - https://cdn.mysql.com//Downloads/Connector-J/mysql-connector-java-${JDBC_MYSQL_VERSION}.tar.gz \
+      | tar xzvf - mysql-connector-java-${JDBC_MYSQL_VERSION}/mysql-connector-java-${JDBC_MYSQL_VERSION}.jar \
+ && mv mysql-connector-java-${JDBC_MYSQL_VERSION}/mysql-connector-java-${JDBC_MYSQL_VERSION}.jar . \
+ && rmdir mysql-connector-java-${JDBC_MYSQL_VERSION} \
+ && sed -i "/^CLASSPATH=/ s|$|:\$APP_HOME/lib/mysql-connector-java-${JDBC_MYSQL_VERSION}.jar|" \
+      /usr/share/linstor-server/bin/Controller
 
 CMD [ "/usr/share/linstor-server/bin/Controller", "--logs=/logs", "--config-directory=/config" ]
