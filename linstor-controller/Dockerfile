@@ -37,4 +37,10 @@ RUN wget https://cdn.mysql.com//Downloads/Connector-J/mysql-connector-java-${JDB
  && mv mysql-connector-java-${JDBC_MYSQL_VERSION}/mysql-connector-java-${JDBC_MYSQL_VERSION}.jar /usr/share/linstor-server/lib/ \
  && rmdir mysql-connector-java-${JDBC_MYSQL_VERSION}
 
+# Upgrade flyway
+ENV JDBC_FLYWAY_VERSION 5.2.0
+RUN rm -rf /usr/share/linstor-server/lib/flyway-core-* \
+ && wget https://repo1.maven.org/maven2/org/flywaydb/flyway-core/${JDBC_FLYWAY_VERSION}/flyway-core-5.2.0.jar \
+      -O /usr/share/linstor-server/lib/flyway-core-${JDBC_FLYWAY_VERSION}.jar
+
 CMD [ "/usr/share/linstor-server/bin/Controller", "--logs=/logs", "--config-directory=/config" ]
