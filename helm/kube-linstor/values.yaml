@@ -24,7 +24,7 @@ controller:
   expose: false
   
   initSettings:
-    enabled: true
+    enabled: false
     # Set plain connector listen to localhost 
     plainConnectorBindAddress: "127.0.0.1"
     # Disable user security (required for setting global options)
@@ -158,6 +158,8 @@ operator:
     pullPolicy: IfNotPresent
     pullSecrets:
       - name: regsecret
+
+  workers: 10
 
   # nodeSelector:
   #   node-role.kubernetes.io/master: ""
